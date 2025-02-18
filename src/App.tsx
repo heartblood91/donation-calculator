@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { ChevronDown, ChevronUp, HelpCircle, Share2, CheckSquare, Mail } from 'lucide-react';
+import { CheckSquare, Mail } from 'lucide-react';
 import { ActionTable } from './components/ActionTable';
 import { InfoBox } from './components/InfoBox';
 import { useCalculator } from './hooks/useCalculator';
 import type { TownType } from './hooks/useCalculator';
 
-export const App: FC = () => {
+const App: FC = () => {
   const {
     showActionTable,
     setShowActionTable,
@@ -199,7 +199,7 @@ export const App: FC = () => {
                         <input
                           type="radio"
                           name="townType"
-                          value={option.value}
+                          value={option.value ?? ''}
                           checked={townType === option.value}
                           onChange={(e) => setTownType(e.target.value as TownType)}
                           className="text-[#E84E10] focus:ring-[#E84E10] h-5 w-5"
@@ -338,3 +338,5 @@ export const App: FC = () => {
     </div>
   );
 };
+
+export default App;
