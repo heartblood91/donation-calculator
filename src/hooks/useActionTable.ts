@@ -117,7 +117,11 @@ export const initialGroups: ActionGroups = [
   }
 ];
 
+const isClient = typeof window !== 'undefined';
+
 const isLocalStorageAvailable = () => {
+  if (!isClient) return false;
+  
   try {
     const test = 'test';
     localStorage.setItem(test, test);
@@ -129,28 +133,34 @@ const isLocalStorageAvailable = () => {
 };
 
 export const useActionTable = () => {
-  const [groups, setGroups] = useState<ActionGroups>(() => {
-    if (isLocalStorageAvailable()) {
+  const [groups, setGroups] = useState<ActionGroups>(initialGroups);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Initialize from localStorage on client-side only
+  useEffect(() => {
+    if (!isInitialized && isLocalStorageAvailable()) {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        return saved ? JSON.parse(saved) : initialGroups;
+        if (saved) {
+          setGroups(JSON.parse(saved));
+        }
       } catch (error) {
         console.error('Error loading saved actions:', error);
-        return initialGroups;
       }
+      setIsInitialized(true);
     }
-    return initialGroups;
-  });
+  }, [isInitialized]);
 
+  // Save to localStorage when groups change
   useEffect(() => {
-    if (isLocalStorageAvailable()) {
+    if (isInitialized && isLocalStorageAvailable()) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(groups));
       } catch (error) {
         console.error('Error saving actions:', error);
       }
     }
-  }, [groups]);
+  }, [groups, isInitialized]);
 
   const toggleAction = (groupIndex: number, subGroupIndex: number, actionId: string) => {
     setGroups(prevGroups => {
