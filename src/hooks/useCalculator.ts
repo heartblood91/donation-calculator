@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import type { ActionGroups } from '../types/action.types';
 
 export interface CircleData {
   people: number;
@@ -17,22 +18,36 @@ export interface PotentialRange {
   max: number;
 }
 
-export const useCalculator = () => {
+export const useCalculator = (groups: ActionGroups) => {
   const [showActionTable, setShowActionTable] = useState<boolean>(false);
+
   const [firstCircle, setFirstCircle] = useState<CircleData>({
     people: 0,
     isExpanded: false,
   });
+
   const [secondCircle, setSecondCircle] = useState<CircleData>({
     people: 0,
     isExpanded: false,
   });
+
   const [townType, setTownType] = useState<TownType>(null);
+
   const [thirdCircle, setThirdCircle] = useState<ThirdCircleData>({
-    visitors: { people: 0, isExpanded: false },
-    onSiteVisitors: { people: 0, isExpanded: false },
+    visitors: {
+      people: 0,
+      isExpanded: false,
+    },
+    onSiteVisitors: {
+      people: 0,
+      isExpanded: false,
+    },
   });
-  const [potentialRange, setPotentialRange] = useState<PotentialRange>({ min: 0, max: 0 });
+
+  const [potentialRange, setPotentialRange] = useState<PotentialRange>({
+    min: 0,
+    max: 0,
+  });
 
   useEffect(() => {
     const updateIframeHeight = () => {
@@ -115,7 +130,7 @@ Résumé de l'estimation du potentiel de collecte
 - Nombre de personnes : ${secondCircle.people}
 - Type de commune : ${getTownTypeText()}
 
-3. Troisième cercle, les inconnues
+3. Troisième cercle, les inconnus
 - Visiteurs en ligne : ${thirdCircle.visitors.people}
 - Visiteurs sur site : ${thirdCircle.onSiteVisitors.people}
 
@@ -133,6 +148,24 @@ Pour maximiser ce potentiel, nous vous recommandons de consulter et mettre en œ
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
+  const calculateActionsProgress = () => {
+    let totalActions = 0;
+    let completedActions = 0;
+
+    groups.forEach(group => {
+      group.subGroups.forEach(subGroup => {
+        totalActions += subGroup.actions.length;
+        completedActions += subGroup.actions.filter(a => a.checked).length;
+      });
+    });
+
+    return totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
+  };
+
+  useEffect(() => {
+    setPotentialRange(prev => ({ ...prev }));
+  }, [groups]);
+
   return {
     showActionTable,
     setShowActionTable,
@@ -146,5 +179,6 @@ Pour maximiser ce potentiel, nous vous recommandons de consulter et mettre en œ
     setThirdCircle,
     potentialRange,
     handleEmailShare,
+    calculateActionsProgress,
   };
 };

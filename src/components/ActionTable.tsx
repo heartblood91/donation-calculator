@@ -1,15 +1,20 @@
 import { FC, useState, useEffect } from 'react';
 import { ArrowLeft, CheckSquare, Square, Mail, ChevronDown, ChevronUp } from 'lucide-react';
-import { useActionTable } from '../hooks/useActionTable';
-import { initialGroups } from '../hooks/useActionTable';
+import type { ActionGroups } from '../types/action.types';
 
 interface ActionTableProps {
   onBack: () => void;
+  groups: ActionGroups;
+  toggleAction: (groupIndex: number, subGroupIndex: number, actionId: string) => void;
+  handleEmailShare: () => void;
 }
 
-export const ActionTable: FC<ActionTableProps> = ({ onBack }) => {
-  const { groups = initialGroups, toggleAction, handleEmailShare } = useActionTable();
-  
+export const ActionTable: FC<ActionTableProps> = ({ 
+  onBack, 
+  groups, 
+  toggleAction, 
+  handleEmailShare 
+}) => {
   // Initialize states with default values
   const [expandedGroups, setExpandedGroups] = useState<Record<number, boolean>>(() => {
     return groups.reduce((acc, _, index) => {
@@ -97,22 +102,64 @@ export const ActionTable: FC<ActionTableProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 antialiased">
-      <div className="max-w-[1400px] mx-auto py-4 px-4 sm:py-8">
+      <div className="max-w-[1400px] mx-auto py-4 px-4 md:py-8">
         <div className="bg-white rounded-xl shadow-xl">
           {/* Header with progress bar */}
           <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200 rounded-t-xl">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4">
-              <div className="flex items-center gap-4">
+            {/* Mobile header */}
+            <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={onBack}
-                  className="p-2 hover:bg-orange-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
+                  className="flex items-center gap-2"
                   title="Retour à la calculette"
                   aria-label="Retour à la calculette"
                 >
-                  <ArrowLeft className="w-6 h-6 text-orange-600" />
+                  <ArrowLeft className="w-5 h-5 text-orange-600" />
+                  <span className="text-gray-600">Retour à la calculette</span>
                 </button>
+              </div>
+              <button
+                onClick={handleEmailShare}
+                className="text-orange-600 px-3 py-1.5 hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2"
+                aria-label="Partager par email"
+              >
+                <span>Partager</span>
+                <Mail className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-4 md:hidden">
+              <h1 className="text-xl font-bold text-gray-900 mb-2">
+                Actions pour optimiser la collecte
+              </h1>
+              <div className="flex items-center gap-2">
+                <div className="w-full bg-gray-100 rounded-full h-2 shadow-inner">
+                  <div
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-500 shadow"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                  {Math.round(progress)}% complété
+                </span>
+              </div>
+            </div>
+
+            {/* Desktop header */}
+            <div className="hidden md:flex flex-row items-center justify-between gap-4 p-4">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={onBack}
+                  className="group flex items-center gap-2 px-3 py-2 hover:bg-orange-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
+                  title="Retour à la calculette"
+                  aria-label="Retour à la calculette"
+                >
+                  <ArrowLeft className="w-5 h-5 text-orange-600" />
+                  <span className="text-gray-600 group-hover:text-gray-900">Retour à la calculette</span>
+                </button>
+                <div className="h-8 w-px bg-gray-200" />
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+                  <h1 className="text-2xl font-bold text-gray-900 truncate">
                     Actions pour optimiser la collecte
                   </h1>
                   <div className="mt-2 flex items-center gap-2">
@@ -130,7 +177,7 @@ export const ActionTable: FC<ActionTableProps> = ({ onBack }) => {
               </div>
               <button
                 onClick={handleEmailShare}
-                className="w-full sm:w-auto min-h-[44px] px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-lg hover:from-orange-700 hover:to-orange-600 active:from-orange-800 active:to-orange-700 transition-all shadow-lg hover:shadow-xl active:shadow-md flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
+                className="min-h-[44px] px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-lg hover:from-orange-700 hover:to-orange-600 active:from-orange-800 active:to-orange-700 transition-all shadow-lg hover:shadow-xl active:shadow-md flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
                 aria-label="Partager par email"
               >
                 <Mail className="w-5 h-5 mr-2" />
@@ -140,7 +187,7 @@ export const ActionTable: FC<ActionTableProps> = ({ onBack }) => {
           </div>
 
           {/* Content */}
-          <div className="p-4 sm:p-6">
+          <div className="p-4 md:p-6">
             {(!Array.isArray(groups) || groups.length === 0) ? (
               <div className="text-center py-8">
                 <p className="text-gray-500">Loading actions...</p>

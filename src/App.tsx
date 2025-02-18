@@ -3,9 +3,12 @@ import { CheckSquare, Mail } from 'lucide-react';
 import { ActionTable } from './components/ActionTable';
 import { InfoBox } from './components/InfoBox';
 import { useCalculator } from './hooks/useCalculator';
+import { useActionTable } from './hooks/useActionTable';
 import type { TownType } from './hooks/useCalculator';
 
 const App: FC = () => {
+  const { groups, toggleAction, handleEmailShare: handleActionEmailShare } = useActionTable();
+
   const {
     showActionTable,
     setShowActionTable,
@@ -19,10 +22,18 @@ const App: FC = () => {
     setThirdCircle,
     potentialRange,
     handleEmailShare,
-  } = useCalculator();
+    calculateActionsProgress,
+  } = useCalculator(groups);
 
   if (showActionTable) {
-    return <ActionTable onBack={() => setShowActionTable(false)} />;
+    return (
+      <ActionTable 
+        onBack={() => setShowActionTable(false)} 
+        groups={groups}
+        toggleAction={toggleAction}
+        handleEmailShare={handleActionEmailShare}
+      />
+    );
   }
 
   const townOptions: { value: TownType; label: string }[] = [
@@ -219,7 +230,7 @@ const App: FC = () => {
                   3
                 </div>
                 <h2 className="text-xl font-medium text-gray-800">
-                  Troisième cercle, les inconnues
+                  Troisième cercle, les inconnus
                 </h2>
               </div>
               <div className="space-y-6">
@@ -311,10 +322,13 @@ const App: FC = () => {
                 {potentialRange.min.toLocaleString('fr-FR')}€ -{' '}
                 {potentialRange.max.toLocaleString('fr-FR')}€
               </div>
-              <p className="text-sm opacity-90">
-                L'atteinte du potentiel de collecte est fortement liée aux
-                actions d'animation qui seront réalisées.
-              </p>
+              <div className="text-sm opacity-90 space-y-1">
+                <p>
+                  L'atteinte du potentiel de collecte est fortement liée aux
+                  actions d'animation qui seront réalisées.
+                  {` ${calculateActionsProgress()}% des actions recommandées sont planifiées.`}
+                </p>
+              </div>
               <div className="flex flex-wrap gap-2 mt-4">
                 <button
                   onClick={handleEmailShare}
