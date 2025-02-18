@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optimisations pour l'iframe */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Amélioration de l'accessibilité des éléments interactifs */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #E84E10;
+  outline-offset: 2px;
+}
+
+/* Amélioration de la lisibilité */
+input[type="number"] {
+  font-size: 16px; /* Évite le zoom sur mobile */
+}
+
+/* Styles pour les transitions fluides */
+.transition-shadow {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Amélioration du contraste */
+.text-gray-700 {
+  color: #374151;
+}
+
+/* Amélioration de l'espacement sur mobile */
+@media (max-width: 640px) {
+  .p-6 {
+    padding: 1.25rem;
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 1.25rem;
+  }
+}
