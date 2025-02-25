@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { TodoList, SubGroup, TodoSection } from '../types/action.types';
+import actionsMarkdown from '../data/actions.md?raw';
 
 const STORAGE_KEY = 'collecte-todo';
 
@@ -42,18 +43,6 @@ const parseMarkdown = (markdown: string): TodoList => {
   return todoList;
 };
 
-const loadMarkdownFile = async (): Promise<TodoList> => {
-  try {
-    const response = await fetch('/src/data/actions.md');
-    if (!response.ok) throw new Error('Failed to load Markdown file');
-    const markdown = await response.text();
-    return parseMarkdown(markdown);
-  } catch (error) {
-    console.error('Error loading Markdown file:', error);
-    return [];
-  }
-};
-
 const isClient = typeof window !== 'undefined';
 
 const isLocalStorageAvailable = () => {
@@ -75,37 +64,33 @@ export const useTodoList = () => {
 
   // Initialize from localStorage or Markdown file
   useEffect(() => {
-    const initializeTodoList = async () => {
-      if (!isInitialized) {
-        if (isLocalStorageAvailable()) {
-          try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-              const parsedList = JSON.parse(saved);
-              // Validate the structure
-              if (Array.isArray(parsedList) && parsedList.every(section => 
-                section && 
-                typeof section === 'object' && 
-                Array.isArray(section.subGroups)
-              )) {
-                setTodoList(parsedList);
-                setIsInitialized(true);
-                return;
-              }
+    if (!isInitialized) {
+      if (isLocalStorageAvailable()) {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsedList = JSON.parse(saved);
+            // Validate the structure
+            if (Array.isArray(parsedList) && parsedList.every(section => 
+              section && 
+              typeof section === 'object' && 
+              Array.isArray(section.subGroups)
+            )) {
+              setTodoList(parsedList);
+              setIsInitialized(true);
+              return;
             }
-          } catch (error) {
-            console.error('Error loading saved todo list:', error);
           }
+        } catch (error) {
+          console.error('Error loading saved todo list:', error);
         }
-        
-        // If no valid data in localStorage, load from Markdown
-        const markdownTodoList = await loadMarkdownFile();
-        setTodoList(markdownTodoList);
-        setIsInitialized(true);
       }
-    };
-
-    initializeTodoList();
+      
+      // If no valid data in localStorage, parse from imported Markdown
+      const markdownTodoList = parseMarkdown(actionsMarkdown);
+      setTodoList(markdownTodoList);
+      setIsInitialized(true);
+    }
   }, [isInitialized]);
 
   // Save to localStorage when todoList changes
