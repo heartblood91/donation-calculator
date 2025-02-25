@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react';
-import { ArrowLeft, CheckSquare, Square, Mail, ChevronDown, ChevronUp } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronUp } from 'lucide-react';
 import type { ActionGroups } from '../types/action.types';
+import { Header } from './Header';
 
 interface ActionTableProps {
   onBack: () => void;
@@ -95,96 +96,20 @@ export const ActionTable: FC<ActionTableProps> = ({
       });
     });
 
-    return totalActions > 0 ? (completedActions / totalActions) * 100 : 0;
+    return totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
   };
-
-  const progress = calculateProgress();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 antialiased">
       <div className="max-w-[1400px] mx-auto py-4 px-4 md:py-8">
         <div className="bg-white rounded-xl shadow-xl">
-          {/* Header with progress bar */}
-          <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200 rounded-t-xl">
-            {/* Mobile header */}
-            <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={onBack}
-                  className="flex items-center gap-2"
-                  title="Retour à la calculette"
-                  aria-label="Retour à la calculette"
-                >
-                  <ArrowLeft className="w-5 h-5 text-orange-600" />
-                  <span className="text-gray-600">Retour à la calculette</span>
-                </button>
-              </div>
-              <button
-                onClick={handleEmailShare}
-                className="text-orange-600 px-3 py-1.5 hover:bg-orange-50 rounded-lg transition-colors flex items-center gap-2"
-                aria-label="Partager par email"
-              >
-                <span>Partager</span>
-                <Mail className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="p-4 md:hidden">
-              <h1 className="text-xl font-bold text-gray-900 mb-2">
-                Actions pour optimiser la collecte
-              </h1>
-              <div className="flex items-center gap-2">
-                <div className="w-full bg-gray-100 rounded-full h-2 shadow-inner">
-                  <div
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-500 shadow"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                  {Math.round(progress)}% complété
-                </span>
-              </div>
-            </div>
-
-            {/* Desktop header */}
-            <div className="hidden md:flex flex-row items-center justify-between gap-4 p-4">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={onBack}
-                  className="group flex items-center gap-2 px-3 py-2 hover:bg-orange-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
-                  title="Retour à la calculette"
-                  aria-label="Retour à la calculette"
-                >
-                  <ArrowLeft className="w-5 h-5 text-orange-600" />
-                  <span className="text-gray-600 group-hover:text-gray-900">Retour à la calculette</span>
-                </button>
-                <div className="h-8 w-px bg-gray-200" />
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900 truncate">
-                    Actions pour optimiser la collecte
-                  </h1>
-                  <div className="mt-2 flex items-center gap-2">
-                    <div className="w-full bg-gray-100 rounded-full h-2.5 shadow-inner">
-                      <div
-                        className="bg-gradient-to-r from-orange-500 to-orange-600 h-2.5 rounded-full transition-all duration-500 shadow"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                      {Math.round(progress)}% complété
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={handleEmailShare}
-                className="min-h-[44px] px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-lg hover:from-orange-700 hover:to-orange-600 active:from-orange-800 active:to-orange-700 transition-all shadow-lg hover:shadow-xl active:shadow-md flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
-                aria-label="Partager par email"
-              >
-                <Mail className="w-5 h-5 mr-2" />
-                <span>Partager par email</span>
-              </button>
-            </div>
-          </div>
+          <Header
+            title="Actions pour optimiser la collecte"
+            progress={calculateProgress()}
+            onShare={handleEmailShare}
+            onNavigate={onBack}
+            isCalculator={false}
+          />
 
           {/* Content */}
           <div className="p-4 md:p-6">
@@ -203,7 +128,7 @@ export const ActionTable: FC<ActionTableProps> = ({
                     <div className="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
                       <button
                         onClick={(e) => toggleGroup(groupIndex, e)}
-                        className="w-full min-h-[44px] flex items-center justify-between p-4 hover:bg-gray-50/80 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
+                        className="w-full min-h-[44px] flex items-center justify-between p-4 hover:bg-gray-50/80 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2DA4A8] focus:ring-offset-2 touch-manipulation"
                         aria-expanded={expandedGroups[groupIndex]}
                       >
                         <div className="flex-1">
@@ -214,7 +139,7 @@ export const ActionTable: FC<ActionTableProps> = ({
                           <div className="mt-2 flex items-center gap-2">
                             <div className="w-full bg-gray-100 rounded-full h-1.5 shadow-inner">
                               <div
-                                className="bg-gradient-to-r from-orange-500 to-orange-600 h-1.5 rounded-full transition-all duration-500"
+                                className="bg-gradient-to-r from-[#2DA4A8] to-[#259397] h-1.5 rounded-full transition-all duration-500"
                                 style={{
                                   width: `${group.subGroups.reduce((acc, subGroup) => {
                                     const total = subGroup.actions.length;
@@ -228,9 +153,9 @@ export const ActionTable: FC<ActionTableProps> = ({
                         </div>
                         <span className="ml-2 flex-shrink-0">
                           {expandedGroups[groupIndex] ? (
-                            <ChevronUp className="w-5 h-5 text-orange-600" />
+                            <ChevronUp className="w-5 h-5 text-[#2DA4A8]" />
                           ) : (
-                            <ChevronDown className="w-5 h-5 text-orange-600" />
+                            <ChevronDown className="w-5 h-5 text-[#2DA4A8]" />
                           )}
                         </span>
                       </button>
@@ -241,10 +166,10 @@ export const ActionTable: FC<ActionTableProps> = ({
                       <div className="divide-y divide-gray-100">
                         {group.subGroups.map((subGroup, subGroupIndex) => (
                           <div key={subGroupIndex} className="bg-white transition-colors">
-                            <div className="border-l-2 border-transparent hover:border-orange-200 transition-colors">
+                            <div className="border-l-2 border-transparent hover:border-[#2DA4A8]/20 transition-colors">
                               <button
                                 onClick={(e) => toggleSubGroup(groupIndex, subGroupIndex, e)}
-                                className="w-full min-h-[44px] flex items-center justify-between p-4 hover:bg-orange-50/50 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
+                                className="w-full min-h-[44px] flex items-center justify-between p-4 hover:bg-[#E5F5F5] transition-colors focus:outline-none focus:ring-2 focus:ring-[#2DA4A8] focus:ring-offset-2 touch-manipulation"
                                 aria-expanded={isSubGroupExpanded(groupIndex, subGroupIndex)}
                               >
                                 <div className="flex-1">
@@ -255,7 +180,7 @@ export const ActionTable: FC<ActionTableProps> = ({
                                   <div className="mt-1.5 flex items-center gap-2">
                                     <div className="w-full bg-gray-100 rounded-full h-1 shadow-inner">
                                       <div
-                                        className="bg-gradient-to-r from-orange-500 to-orange-600 h-1 rounded-full transition-all duration-500"
+                                        className="bg-gradient-to-r from-[#2DA4A8] to-[#259397] h-1 rounded-full transition-all duration-500"
                                         style={{
                                           width: `${(subGroup.actions.filter(a => a.checked).length / subGroup.actions.length) * 100}%`
                                         }}
@@ -268,9 +193,9 @@ export const ActionTable: FC<ActionTableProps> = ({
                                 </div>
                                 <span className="ml-2 flex-shrink-0">
                                   {isSubGroupExpanded(groupIndex, subGroupIndex) ? (
-                                    <ChevronUp className="w-4 h-4 text-orange-600" />
+                                    <ChevronUp className="w-4 h-4 text-[#2DA4A8]" />
                                   ) : (
-                                    <ChevronDown className="w-4 h-4 text-orange-600" />
+                                    <ChevronDown className="w-4 h-4 text-[#2DA4A8]" />
                                   )}
                                 </span>
                               </button>
@@ -283,13 +208,13 @@ export const ActionTable: FC<ActionTableProps> = ({
                                       <button
                                         key={action.id}
                                         onClick={(e) => handleActionClick(groupIndex, subGroupIndex, action.id, e)}
-                                        className="w-full group flex items-start gap-3 px-3 py-2 bg-white hover:bg-orange-50 rounded-lg transition-all text-left focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 touch-manipulation"
+                                        className="w-full group flex items-start gap-3 px-3 py-2 bg-white hover:bg-[#E5F5F5] rounded-lg transition-all text-left focus:outline-none focus:ring-2 focus:ring-[#2DA4A8] focus:ring-offset-2 touch-manipulation"
                                         role="checkbox"
                                         aria-checked={action.checked}
                                       >
                                         <div className="flex-shrink-0 mt-0.5">
                                           {action.checked ? (
-                                            <CheckSquare className="w-5 h-5 text-orange-600" />
+                                            <CheckSquare className="w-5 h-5 text-[#2DA4A8]" />
                                           ) : (
                                             <Square className="w-5 h-5 text-gray-400 group-hover:text-gray-500" />
                                           )}

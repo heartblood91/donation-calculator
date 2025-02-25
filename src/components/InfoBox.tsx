@@ -11,7 +11,7 @@ export const InfoBox: FC<InfoBoxProps> = ({ isExpanded, onClick, children }) => 
   <div className="mt-2 text-sm">
     <button
       onClick={onClick}
-      className="flex items-center text-[#E84E10] hover:text-[#c23c06] focus:outline-none focus:ring-2 focus:ring-[#E84E10] focus:ring-offset-2 rounded-md"
+      className="flex items-center text-[#2DA4A8] hover:text-[#259397] focus:outline-none focus:ring-2 focus:ring-[#2DA4A8] focus:ring-offset-2 rounded-md"
     >
       <HelpCircle size={16} className="mr-1" />
       {isExpanded ? 'Masquer les informations' : "Plus d'informations"}
@@ -22,7 +22,7 @@ export const InfoBox: FC<InfoBoxProps> = ({ isExpanded, onClick, children }) => 
       )}
     </button>
     {isExpanded && (
-      <div className="mt-2 p-4 bg-gray-50 rounded border border-gray-200">
+      <div className="mt-2 p-4 bg-[#E5F5F5] rounded border border-[#2DA4A8]/20">
         {children}
       </div>
     )}
