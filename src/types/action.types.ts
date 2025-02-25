@@ -9,9 +9,9 @@ export interface SubGroup {
   actions: Action[];
 }
 
-export interface ActionGroup {
+export interface TodoSection {
   title: string;
   subGroups: SubGroup[];
 }
 
-export type ActionGroups = ActionGroup[]; 
+export type TodoList = TodoSection[]; 

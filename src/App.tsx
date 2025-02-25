@@ -1,17 +1,22 @@
 import { FC } from 'react';
-import { ActionTable } from './components/ActionTable';
+import { TodoList } from './components/TodoList';
 import { InfoBox } from './components/InfoBox';
 import { Header } from './components/Header';
 import { useCalculator } from './hooks/useCalculator';
-import { useActionTable } from './hooks/useActionTable';
+import { useTodoList } from './hooks/useTodoList';
 import type { TownType } from './hooks/useCalculator';
 
 const App: FC = () => {
-  const { groups, toggleAction, handleEmailShare: handleActionEmailShare } = useActionTable();
+  const {
+    todoList,
+    toggleItem,
+    calculateProgress,
+    handleEmailShare: handleTodoEmailShare,
+  } = useTodoList();
 
   const {
-    showActionTable,
-    setShowActionTable,
+    showActionTable: showTodoList,
+    setShowActionTable: setShowTodoList,
     firstCircle,
     setFirstCircle,
     secondCircle,
@@ -22,16 +27,16 @@ const App: FC = () => {
     setThirdCircle,
     potentialRange,
     handleEmailShare,
-    calculateActionsProgress,
-  } = useCalculator(groups);
+  } = useCalculator(todoList);
 
-  if (showActionTable) {
+  if (showTodoList) {
     return (
-      <ActionTable 
-        onBack={() => setShowActionTable(false)} 
-        groups={groups}
-        toggleAction={toggleAction}
-        handleEmailShare={handleActionEmailShare}
+      <TodoList
+        onBack={() => setShowTodoList(false)}
+        todoList={todoList}
+        progress={calculateProgress()}
+        toggleItem={toggleItem}
+        handleEmailShare={handleTodoEmailShare}
       />
     );
   }
@@ -57,9 +62,9 @@ const App: FC = () => {
         <div className="bg-white rounded-xl shadow-xl">
           <Header
             title="Calculette de Potentiel de Collecte"
-            progress={calculateActionsProgress()}
+            progress={calculateProgress()}
             onShare={handleEmailShare}
-            onNavigate={() => setShowActionTable(true)}
+            onNavigate={() => setShowTodoList(true)}
             isCalculator={true}
           />
 
@@ -102,13 +107,14 @@ const App: FC = () => {
                     <input
                       type="number"
                       min="0"
-                      value={firstCircle.people}
+                      value={firstCircle.people || ''}
                       onChange={(e) =>
                         setFirstCircle({
                           ...firstCircle,
-                          people: parseInt(e.target.value) || 0,
+                          people: e.target.value === '' ? 0 : parseInt(e.target.value),
                         })
                       }
+                      onFocus={(e) => e.target.select()}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
                     />
                     <InfoBox
@@ -166,13 +172,14 @@ const App: FC = () => {
                     <input
                       type="number"
                       min="0"
-                      value={secondCircle.people}
+                      value={secondCircle.people || ''}
                       onChange={(e) =>
                         setSecondCircle({
                           ...secondCircle,
-                          people: parseInt(e.target.value) || 0,
+                          people: e.target.value === '' ? 0 : parseInt(e.target.value),
                         })
                       }
+                      onFocus={(e) => e.target.select()}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
                     />
                     <InfoBox
@@ -246,16 +253,17 @@ const App: FC = () => {
                     <input
                       type="number"
                       min="0"
-                      value={thirdCircle.visitors.people}
+                      value={thirdCircle.visitors.people || ''}
                       onChange={(e) =>
                         setThirdCircle({
                           ...thirdCircle,
                           visitors: {
                             ...thirdCircle.visitors,
-                            people: parseInt(e.target.value) || 0,
+                            people: e.target.value === '' ? 0 : parseInt(e.target.value),
                           },
                         })
                       }
+                      onFocus={(e) => e.target.select()}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
                     />
                     <label className="block text-sm font-medium text-gray-700 mt-4 mb-2">
@@ -267,16 +275,17 @@ const App: FC = () => {
                     <input
                       type="number"
                       min="0"
-                      value={thirdCircle.onSiteVisitors.people}
+                      value={thirdCircle.onSiteVisitors.people || ''}
                       onChange={(e) =>
                         setThirdCircle({
                           ...thirdCircle,
                           onSiteVisitors: {
                             ...thirdCircle.onSiteVisitors,
-                            people: parseInt(e.target.value) || 0,
+                            people: e.target.value === '' ? 0 : parseInt(e.target.value),
                           },
                         })
                       }
+                      onFocus={(e) => e.target.select()}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
                     />
                     <InfoBox

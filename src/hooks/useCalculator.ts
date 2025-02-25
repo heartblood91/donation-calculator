@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import type { ActionGroups } from '../types/action.types';
+import type { TodoList } from '../types/action.types';
+import {
+  FIRST_CIRCLE_RATES,
+  SECOND_CIRCLE_RATES,
+  THIRD_CIRCLE_RATES,
+  AVERAGE_DONATION_AMOUNTS,
+} from '../constants/donation.constants';
 
 export interface CircleData {
   people: number;
@@ -18,7 +24,7 @@ export interface PotentialRange {
   max: number;
 }
 
-export const useCalculator = (groups: ActionGroups) => {
+export const useCalculator = (todoList: TodoList) => {
   const [showActionTable, setShowActionTable] = useState<boolean>(false);
 
   const [firstCircle, setFirstCircle] = useState<CircleData>({
@@ -64,14 +70,23 @@ export const useCalculator = (groups: ActionGroups) => {
 
   const calculatePotential = () => {
     const firstCircleDonors = {
-      min: firstCircle.people * 0.3,
-      max: firstCircle.people * 0.6,
+      min: firstCircle.people * FIRST_CIRCLE_RATES.MIN_DONOR_RATE,
+      max: firstCircle.people * FIRST_CIRCLE_RATES.MAX_DONOR_RATE,
     };
 
     const secondCircleRate = {
-      smallTown: { min: 0.05, max: 0.1 },
-      mediumTown: { min: 0.005, max: 0.01 },
-      largeCity: { min: 0.0005, max: 0.001 },
+      smallTown: { 
+        min: SECOND_CIRCLE_RATES.SMALL_TOWN.MIN_DONOR_RATE, 
+        max: SECOND_CIRCLE_RATES.SMALL_TOWN.MAX_DONOR_RATE 
+      },
+      mediumTown: { 
+        min: SECOND_CIRCLE_RATES.MEDIUM_TOWN.MIN_DONOR_RATE, 
+        max: SECOND_CIRCLE_RATES.MEDIUM_TOWN.MAX_DONOR_RATE 
+      },
+      largeCity: { 
+        min: SECOND_CIRCLE_RATES.LARGE_CITY.MIN_DONOR_RATE, 
+        max: SECOND_CIRCLE_RATES.LARGE_CITY.MAX_DONOR_RATE 
+      },
     };
 
     let secondCircleDonorsMin = 0;
@@ -88,8 +103,8 @@ export const useCalculator = (groups: ActionGroups) => {
     };
 
     const thirdCircleDonors = {
-      min: thirdCircle.visitors.people * 0.01,
-      max: thirdCircle.onSiteVisitors.people * 0.05,
+      min: thirdCircle.visitors.people * THIRD_CIRCLE_RATES.ONLINE_VISITORS.DONOR_RATE,
+      max: thirdCircle.onSiteVisitors.people * THIRD_CIRCLE_RATES.ONSITE_VISITORS.DONOR_RATE,
     };
 
     const totalDonors = {
@@ -97,8 +112,10 @@ export const useCalculator = (groups: ActionGroups) => {
       max: firstCircleDonors.max + secondCircleDonors.max,
     };
 
-    const potentielMin = totalDonors.min * 348 + (thirdCircleDonors.min + thirdCircleDonors.max) * 200;
-    const potentielMax = totalDonors.max * 348 + (thirdCircleDonors.min + thirdCircleDonors.max) * 200;
+    const potentielMin = totalDonors.min * AVERAGE_DONATION_AMOUNTS.FIRST_AND_SECOND_CIRCLE + 
+      (thirdCircleDonors.min + thirdCircleDonors.max) * AVERAGE_DONATION_AMOUNTS.THIRD_CIRCLE;
+    const potentielMax = totalDonors.max * AVERAGE_DONATION_AMOUNTS.FIRST_AND_SECOND_CIRCLE + 
+      (thirdCircleDonors.min + thirdCircleDonors.max) * AVERAGE_DONATION_AMOUNTS.THIRD_CIRCLE;
 
     setPotentialRange({
       min: Math.round(potentielMin),
@@ -152,7 +169,7 @@ Pour maximiser ce potentiel, nous vous recommandons de consulter et mettre en œ
     let totalActions = 0;
     let completedActions = 0;
 
-    groups.forEach(group => {
+    todoList.forEach(group => {
       group.subGroups.forEach(subGroup => {
         totalActions += subGroup.actions.length;
         completedActions += subGroup.actions.filter(a => a.checked).length;
@@ -164,7 +181,7 @@ Pour maximiser ce potentiel, nous vous recommandons de consulter et mettre en œ
 
   useEffect(() => {
     setPotentialRange(prev => ({ ...prev }));
-  }, [groups]);
+  }, [todoList]);
 
   return {
     showActionTable,

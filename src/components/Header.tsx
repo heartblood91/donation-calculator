@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Mail, CheckSquare, ArrowLeft } from 'lucide-react';
+import { Mail, CheckSquare, Calculator } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
@@ -33,7 +33,7 @@ export const Header: FC<HeaderProps> = ({
                   </>
                 ) : (
                   <>
-                    <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Accéder à la calculette</span>
                   </>
                 )}
