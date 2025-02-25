@@ -5,6 +5,12 @@ import { Header } from './components/Header';
 import { useCalculator } from './hooks/useCalculator';
 import { useTodoList } from './hooks/useTodoList';
 import type { TownType } from './hooks/useCalculator';
+import { Card } from './components/ui/Card';
+import { TextField } from './components/ui/TextField';
+import { RadioGroup } from './components/ui/RadioGroup';
+import { Alert } from './components/ui/Alert';
+import { Container, Stack } from '@mui/material';
+import { Info } from '@mui/icons-material';
 
 const App: FC = () => {
   const {
@@ -41,7 +47,7 @@ const App: FC = () => {
     );
   }
 
-  const townOptions: { value: TownType; label: string }[] = [
+  const townOptions = [
     {
       value: 'smallTown',
       label: "Petite commune (jusqu'à 2.000 habitants)",
@@ -58,8 +64,8 @@ const App: FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 antialiased">
-      <div className="max-w-[1400px] mx-auto py-4 px-4 md:py-8">
-        <div className="bg-white rounded-xl shadow-xl">
+      <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
+        <Card sx={{ overflow: 'hidden' }}>
           <Header
             title="Calculette de Potentiel de Collecte"
             progress={calculateProgress()}
@@ -68,45 +74,32 @@ const App: FC = () => {
             isCalculator={true}
           />
 
-          <div className="p-4 md:p-6">
-            <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg mb-8">
-              <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0">
-                  <div className="w-6 h-6 rounded-full bg-[#2DA4A8] text-white flex items-center justify-center text-sm">
-                    !
-                  </div>
-                </div>
-                <p className="text-gray-700">
-                  La calculette est d'abord un outil pour obtenir un ordre de
-                  grandeur du potentiel de la collecte, qu'il faudra affiner en
-                  fonction de la capacité à animer la collecte et des actions que
-                  vous avez envisagez de mener.
-                </p>
-              </div>
-            </div>
+          <Stack spacing={2} sx={{ p: { xs: 2, md: 3 } }}>
+            <Alert
+              icon={<Info className="w-5 h-5" />}
+              severity="info"
+            >
+              La calculette est d'abord un outil pour obtenir un ordre de
+              grandeur du potentiel de la collecte, qu'il faudra affiner en
+              fonction de la capacité à animer la collecte et des actions que
+              vous avez envisagez de mener.
+            </Alert>
 
-            <div className="space-y-6">
+            <Stack spacing={2}>
               {/* First Circle */}
-              <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                <div className="flex items-center space-x-2 mb-4">
-                  <div className="w-6 h-6 rounded-full bg-[#2DA4A8] text-white flex items-center justify-center">
+              <Card
+                title="Premier cercle et ambassadeurs"
+                headerIcon={
+                  <div className="w-5 h-5 rounded-full bg-[#2DA4A8] text-white flex items-center justify-center text-sm">
                     1
                   </div>
-                  <h2 className="text-xl font-medium text-gray-800">
-                    Premier cercle et ambassadeurs
-                  </h2>
-                </div>
-                <div className="space-y-4">
+                }
+              >
+                <Stack spacing={1}>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nombre de donateurs potentiels
-                    </label>
-                    <p className="text-sm text-gray-600 italic mb-2">
-                      Reportez ici le nombre de personnes concernées
-                    </p>
-                    <input
+                    <TextField
+                      label="Nombre de donateurs potentiels"
                       type="number"
-                      min="0"
                       value={firstCircle.people || ''}
                       onChange={(e) =>
                         setFirstCircle({
@@ -115,7 +108,7 @@ const App: FC = () => {
                         })
                       }
                       onFocus={(e) => e.target.select()}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
+                      helperText="Reportez ici le nombre de personnes concernées"
                     />
                     <InfoBox
                       isExpanded={firstCircle.isExpanded}
@@ -148,185 +141,152 @@ const App: FC = () => {
                       </p>
                     </InfoBox>
                   </div>
-                </div>
-              </div>
+                </Stack>
+              </Card>
 
               {/* Second Circle */}
-              <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                <div className="flex items-center space-x-2 mb-4">
-                  <div className="w-6 h-6 rounded-full bg-[#2DA4A8] text-white flex items-center justify-center">
+              <Card
+                title="Deuxième cercle, les sensibilisés"
+                headerIcon={
+                  <div className="w-5 h-5 rounded-full bg-[#2DA4A8] text-white flex items-center justify-center text-sm">
                     2
                   </div>
-                  <h2 className="text-xl font-medium text-gray-800">
-                    Deuxième cercle, les sensibilisés
-                  </h2>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nombre de donateurs potentiels
-                    </label>
-                    <p className="text-sm text-gray-600 italic mb-2">
-                      Reportez ici le nombre de personnes concernées
+                }
+              >
+                <Stack spacing={2}>
+                  <TextField
+                    label="Nombre de donateurs potentiels"
+                    type="number"
+                    value={secondCircle.people || ''}
+                    onChange={(e) =>
+                      setSecondCircle({
+                        ...secondCircle,
+                        people: e.target.value === '' ? 0 : parseInt(e.target.value),
+                      })
+                    }
+                    onFocus={(e) => e.target.select()}
+                    helperText="Reportez ici le nombre de personnes concernées"
+                  />
+                  <InfoBox
+                    isExpanded={secondCircle.isExpanded}
+                    onClick={() =>
+                      setSecondCircle({
+                        ...secondCircle,
+                        isExpanded: !secondCircle.isExpanded,
+                      })
+                    }
+                  >
+                    <p className="mb-2">
+                      Le 2e cercle, les sensibilisés, est composé des habitants
+                      de la région ou des environs, non directement concernés
+                      par le projet mais accessibles, adressables, par exemple
+                      les lecteurs de journaux locaux, les membres
+                      d'associations tierces, etc.
                     </p>
-                    <input
-                      type="number"
-                      min="0"
-                      value={secondCircle.people || ''}
-                      onChange={(e) =>
-                        setSecondCircle({
-                          ...secondCircle,
-                          people: e.target.value === '' ? 0 : parseInt(e.target.value),
-                        })
-                      }
-                      onFocus={(e) => e.target.select()}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
-                    />
-                    <InfoBox
-                      isExpanded={secondCircle.isExpanded}
-                      onClick={() =>
-                        setSecondCircle({
-                          ...secondCircle,
-                          isExpanded: !secondCircle.isExpanded,
-                        })
-                      }
-                    >
-                      <p className="mb-2">
-                        Le 2e cercle, les sensibilisés, est composé des habitants
-                        de la région ou des environs, non directement concernés
-                        par le projet mais accessibles, adressables, par exemple
-                        les lecteurs de journaux locaux, les membres
-                        d'associations tierces, etc.
-                      </p>
-                      <p>
-                        Pour évaluer le nombre de personnes concernées, évaluer le
-                        nombre d'habitants alentour, selon votre commune,
-                        communauté ou agglomération.
-                      </p>
-                    </InfoBox>
-                  </div>
+                    <p>
+                      Pour évaluer le nombre de personnes concernées, évaluer le
+                      nombre d'habitants alentour, selon votre commune,
+                      communauté ou agglomération.
+                    </p>
+                  </InfoBox>
 
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Sélectionnez s'il s'agit des habitants :
-                    </label>
-                    <div className="space-y-2">
-                      {townOptions.map((option) => (
-                        <label
-                          key={option.value}
-                          className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-                        >
-                          <input
-                            type="radio"
-                            name="townType"
-                            value={option.value ?? ''}
-                            checked={townType === option.value}
-                            onChange={(e) => setTownType(e.target.value as TownType)}
-                            className="text-[#2DA4A8] focus:ring-[#2DA4A8] h-5 w-5"
-                          />
-                          <span className="ml-3">{option.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  <RadioGroup
+                    label="Sélectionnez s'il s'agit des habitants :"
+                    value={townType ?? ''}
+                    onChange={(e) => setTownType(e.target.value as TownType)}
+                    options={townOptions}
+                  />
+                </Stack>
+              </Card>
 
               {/* Third Circle */}
-              <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                <div className="flex items-center space-x-2 mb-4">
-                  <div className="w-6 h-6 rounded-full bg-[#2DA4A8] text-white flex items-center justify-center">
+              <Card
+                title="Troisième cercle, les inconnus"
+                headerIcon={
+                  <div className="w-5 h-5 rounded-full bg-[#2DA4A8] text-white flex items-center justify-center text-sm">
                     3
                   </div>
-                  <h2 className="text-xl font-medium text-gray-800">
-                    Troisième cercle, les inconnus
-                  </h2>
-                </div>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Les visiteurs (y compris en ligne)
-                    </label>
-                    <p className="text-sm text-gray-600 italic mb-2">
-                      Reportez ici le nombre de personnes concernées
+                }
+              >
+                <Stack spacing={2}>
+                  <TextField
+                    label="Les visiteurs (y compris en ligne)"
+                    type="number"
+                    value={thirdCircle.visitors.people || ''}
+                    onChange={(e) =>
+                      setThirdCircle({
+                        ...thirdCircle,
+                        visitors: {
+                          ...thirdCircle.visitors,
+                          people: e.target.value === '' ? 0 : parseInt(e.target.value),
+                        },
+                      })
+                    }
+                    onFocus={(e) => e.target.select()}
+                    helperText="Reportez ici le nombre de personnes concernées"
+                  />
+                  <TextField
+                    label="Les visiteurs accueillis et sollicités lors de leur visite"
+                    type="number"
+                    value={thirdCircle.onSiteVisitors.people || ''}
+                    onChange={(e) =>
+                      setThirdCircle({
+                        ...thirdCircle,
+                        onSiteVisitors: {
+                          ...thirdCircle.onSiteVisitors,
+                          people: e.target.value === '' ? 0 : parseInt(e.target.value),
+                        },
+                      })
+                    }
+                    onFocus={(e) => e.target.select()}
+                    helperText="Reportez ici le nombre de personnes concernées"
+                  />
+                  <InfoBox
+                    isExpanded={thirdCircle.onSiteVisitors.isExpanded}
+                    onClick={() =>
+                      setThirdCircle({
+                        ...thirdCircle,
+                        onSiteVisitors: {
+                          ...thirdCircle.onSiteVisitors,
+                          isExpanded: !thirdCircle.onSiteVisitors.isExpanded,
+                        },
+                      })
+                    }
+                  >
+                    <p className="mb-2">
+                      Ces potentiels donateurs, sans attaches locales
+                      particulières, sont d'abord attirés par l'intérêt patrimonial
+                      et la renommée du site. Ils découvrent ou visitent le site
+                      sans avoir de lien particulier avec celui-ci.
                     </p>
-                    <input
-                      type="number"
-                      min="0"
-                      value={thirdCircle.visitors.people || ''}
-                      onChange={(e) =>
-                        setThirdCircle({
-                          ...thirdCircle,
-                          visitors: {
-                            ...thirdCircle.visitors,
-                            people: e.target.value === '' ? 0 : parseInt(e.target.value),
-                          },
-                        })
-                      }
-                      onFocus={(e) => e.target.select()}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
-                    />
-                    <label className="block text-sm font-medium text-gray-700 mt-4 mb-2">
-                      Les visiteurs accueillis et sollicités lors de leur visite
-                    </label>
-                    <p className="text-sm text-gray-600 italic mb-2">
-                      Reportez ici le nombre de personnes concernées
+                    <p className="mb-2">
+                      Ce cercle inclut les potentiel « visiteurs » sur Internet
+                      qui découvrent et soutiennent le projet lors de campagnes
+                      de communication.
                     </p>
-                    <input
-                      type="number"
-                      min="0"
-                      value={thirdCircle.onSiteVisitors.people || ''}
-                      onChange={(e) =>
-                        setThirdCircle({
-                          ...thirdCircle,
-                          onSiteVisitors: {
-                            ...thirdCircle.onSiteVisitors,
-                            people: e.target.value === '' ? 0 : parseInt(e.target.value),
-                          },
-                        })
-                      }
-                      onFocus={(e) => e.target.select()}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2DA4A8] focus:border-[#2DA4A8] transition-shadow"
-                    />
-                    <InfoBox
-                      isExpanded={thirdCircle.onSiteVisitors.isExpanded}
-                      onClick={() =>
-                        setThirdCircle({
-                          ...thirdCircle,
-                          onSiteVisitors: {
-                            ...thirdCircle.onSiteVisitors,
-                            isExpanded: !thirdCircle.onSiteVisitors.isExpanded,
-                          },
-                        })
-                      }
-                    >
-                      <p className="mb-2">
-                        Ces potentiels donateurs, sans attaches locales
-                        particulières, sont d'abord attirés par l'intérêt patrimonial
-                        et la renommée du site. Ils découvrent ou visitent le site
-                        sans avoir de lien particulier avec celui-ci.
-                      </p>
-                      <p className="mb-2">
-                        Ce cercle inclut les potentiel « visiteurs » sur Internet
-                        qui découvrent et soutiennent le projet lors de campagnes
-                        de communication.
-                      </p>
-                      <p>
-                        Dans cette catégorie, on évaluera à part les visiteurs du
-                        site lorsqu'ils sont accueillis sur place (entrée payante
-                        ou non), ou lors d'un événement particulier, s'il y a
-                        lieu, ces visiteurs pouvant faire l'objet d'une
-                        sollicitation particulière pour effectuer un don lors de
-                        leur visite.
-                      </p>
-                    </InfoBox>
-                  </div>
-                </div>
-              </div>
+                    <p>
+                      Dans cette catégorie, on évaluera à part les visiteurs du
+                      site lorsqu'ils sont accueillis sur place (entrée payante
+                      ou non), ou lors d'un événement particulier, s'il y a
+                      lieu, ces visiteurs pouvant faire l'objet d'une
+                      sollicitation particulière pour effectuer un don lors de
+                      leur visite.
+                    </p>
+                  </InfoBox>
+                </Stack>
+              </Card>
 
               {/* Results */}
-              <div className="p-6 bg-[#2DA4A8] rounded-lg text-white">
-                <div className="flex items-center justify-between gap-4 mb-4">
+              <Card
+                sx={{
+                  backgroundColor: '#2DA4A8',
+                  color: 'white',
+                  '& .MuiCardContent-root': {
+                    padding: '1rem',
+                  },
+                }}
+              >
+                <Stack spacing={1}>
                   <div>
                     <h2 className="text-xl font-bold">
                       Estimation du potentiel de collecte
@@ -336,18 +296,16 @@ const App: FC = () => {
                       {potentialRange.max.toLocaleString('fr-FR')}€
                     </div>
                   </div>
-                </div>
-                <div className="text-sm opacity-90">
-                  <p>
+                  <p className="text-sm opacity-90">
                     L'atteinte du potentiel de collecte est fortement liée aux
                     actions d'animation qui seront réalisées.
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                </Stack>
+              </Card>
+            </Stack>
+          </Stack>
+        </Card>
+      </Container>
     </div>
   );
 };

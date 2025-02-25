@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react';
-import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
+import { ExpandMore, ExpandLess, Help } from '@mui/icons-material';
 
 interface InfoBoxProps {
   isExpanded: boolean;
@@ -13,12 +13,12 @@ export const InfoBox: FC<InfoBoxProps> = ({ isExpanded, onClick, children }) => 
       onClick={onClick}
       className="flex items-center text-[#2DA4A8] hover:text-[#259397] focus:outline-none focus:ring-2 focus:ring-[#2DA4A8] focus:ring-offset-2 rounded-md"
     >
-      <HelpCircle size={16} className="mr-1" />
+      <Help fontSize="small" className="mr-1" />
       {isExpanded ? 'Masquer les informations' : "Plus d'informations"}
       {isExpanded ? (
-        <ChevronUp size={16} className="ml-1" />
+        <ExpandLess fontSize="small" className="ml-1" />
       ) : (
-        <ChevronDown size={16} className="ml-1" />
+        <ExpandMore fontSize="small" className="ml-1" />
       )}
     </button>
     {isExpanded && (

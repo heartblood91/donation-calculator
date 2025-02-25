@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Mail, CheckSquare, Calculator } from 'lucide-react';
+import { Email, FormatListBulleted, Calculate } from '@mui/icons-material';
 
 interface HeaderProps {
   title: string;
@@ -28,12 +28,12 @@ export const Header: FC<HeaderProps> = ({
               >
                 {isCalculator ? (
                   <>
-                    <CheckSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <FormatListBulleted className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Accéder aux actions recommandées</span>
                   </>
                 ) : (
                   <>
-                    <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <Calculate className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Accéder à la calculette</span>
                   </>
                 )}
@@ -61,7 +61,7 @@ export const Header: FC<HeaderProps> = ({
             aria-label="Partager par email"
           >
             <span>Partager</span>
-            <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <Email className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>

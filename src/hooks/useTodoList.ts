@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { TodoList, Action, SubGroup, TodoSection } from '../types/action.types';
+import type { TodoList, SubGroup, TodoSection } from '../types/action.types';
 
 const STORAGE_KEY = 'collecte-todo';
 
