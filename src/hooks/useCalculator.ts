@@ -55,19 +55,6 @@ export const useCalculator = (todoList: TodoList) => {
     max: 0,
   });
 
-  useEffect(() => {
-    const updateIframeHeight = () => {
-      const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({ type: 'resize', height }, '*');
-    };
-
-    const resizeObserver = new ResizeObserver(updateIframeHeight);
-    resizeObserver.observe(document.body);
-    updateIframeHeight();
-
-    return () => resizeObserver.disconnect();
-  }, []);
-
   const calculatePotential = () => {
     const firstCircleDonors = {
       min: firstCircle.people * FIRST_CIRCLE_RATES.MIN_DONOR_RATE,
@@ -178,10 +165,6 @@ Pour maximiser ce potentiel, nous vous recommandons de consulter et mettre en œ
 
     return totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
   };
-
-  useEffect(() => {
-    setPotentialRange(prev => ({ ...prev }));
-  }, [todoList]);
 
   return {
     showActionTable,
