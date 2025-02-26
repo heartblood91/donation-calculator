@@ -44,15 +44,15 @@ export const TodoList: FC<TodoListProps> = ({
                 return (
                   <Card key={sectionIndex}>
                     <Stack spacing={2}>
-                      <h2 className="text-lg font-medium text-gray-900">
+                      <h2 className="text-xl font-bold text-[#2DA4A8] pb-2 border-b border-[#2DA4A8]/10">
                         {section.title}
                       </h2>
                       {section.subGroups.map((subGroup: SubGroup, subGroupIndex: number) => {
                         if (!subGroup || !Array.isArray(subGroup.actions)) return null;
 
                         return (
-                          <div key={subGroupIndex}>
-                            <h3 className="text-base font-medium text-gray-800 mb-2">
+                          <div key={subGroupIndex} className="pt-2">
+                            <h3 className="text-base font-semibold text-[#1B3168] mb-3 pb-1 border-b border-[#1B3168]/10">
                               {subGroup.title}
                             </h3>
                             <Stack spacing={0.5}>
